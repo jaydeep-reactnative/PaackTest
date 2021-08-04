@@ -23,6 +23,7 @@ export const DeliveryListScreen = observer(function DeliveryListScreen() {
     }
     fetchData()
   }, [])
+  console.tron.log(delivery)
 
   return (
     <View style={DeliveryList.FULL}>

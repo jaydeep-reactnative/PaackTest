@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native"
+import { observer } from "mobx-react-lite"
 import React, { useEffect, useState } from "react"
 import { Image, Platform, View } from "react-native"
 import Geolocation from 'react-native-geolocation-service'
@@ -10,7 +11,7 @@ import * as DeliveryDetails from './delivery-details-screen-style'
 
 const heart = require("./heart.png")
 
-export const DeliveryDetailsScreen = ({ route }) => {
+export const DeliveryDetailsScreen = observer(function DeliveryDetailsScreen({ route }:any) {
   // Pull in one of our MST stores
   const { deliveryStore } = useStores()
 
@@ -127,4 +128,4 @@ export const DeliveryDetailsScreen = ({ route }) => {
       </Screen>
     </View>
   )
-}
+})
