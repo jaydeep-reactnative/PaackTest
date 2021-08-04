@@ -1,6 +1,6 @@
-import { Instance, SnapshotOut, types, flow } from "mobx-state-tree"
-import { DeliveryListModel, DeliveryListSnapshot } from "../delivery-list/delivery-list"
+import { Instance, SnapshotOut, types } from "mobx-state-tree"
 import { DeliveryApi } from "../../services/api/delivery-api"
+import { DeliveryListModel, DeliveryListSnapshot } from "../delivery-list/delivery-list"
 import { withEnvironment } from "../extensions/with-environment"
 
 export const DeliveryStoreModel = types
@@ -15,28 +15,11 @@ export const DeliveryStoreModel = types
     },
   }))
   .actions((self) => ({
-    updateDelivery: (data: Record<string, any>) => {
-      const fetchDelivery = flow(function * () {
-        const clonedDelivery = [...self.delivery]
-        try {
-          const findIndex = clonedDelivery.findIndex(item => item.id === data.deliveryId)
-          clonedDelivery[findIndex].status = data.status
-          // self.saveDelivery(clonedDelivery)
-        } catch (error) {
-          console.error("Failed to fetch projects", error)
-        }
-        return self.saveDelivery(clonedDelivery)
-      })
-      fetchDelivery()
-    },
-  }))
-  .actions((self) => ({
     getDeliveries: async () => {
       const deliveryApi = new DeliveryApi(self.environment.api)
       const result = await deliveryApi.getDeliveries()
 
       if (result.kind === "ok") {
-        // console.tron.log('result.characters: ', result.deliveries)
         self.saveDelivery(result.deliveries)
       } else {
         __DEV__ && console.tron.log(result.kind)
@@ -47,14 +30,11 @@ export const DeliveryStoreModel = types
       const result = await deliveryApi.postDelivery(deliveryId, status, latitude, longitude)
 
       if (result.kind === "ok") {
-        // console.tron.log('postDelivery: ', result.delivery)
-        // const deliveredId = result.delivery.deliveryId
+        const deliveredId = result.delivery.deliveryId
         const clonedDelivery = [...self.delivery]
-        const findIndex = clonedDelivery.findIndex(item => item.id === result.delivery.deliveryId)
+        const findIndex = clonedDelivery.findIndex(item => item.id === deliveredId)
         clonedDelivery[findIndex].status = result.delivery.status
-        // self.saveDelivery(clonedDelivery)
-        // console.tron.log('getDelivery: ', self.delivery)
-        self.updateDelivery(result.delivery)
+        self.saveDelivery(clonedDelivery)
       } else {
         __DEV__ && console.tron.log(result.kind)
       }

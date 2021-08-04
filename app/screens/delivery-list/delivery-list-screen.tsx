@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native"
 import { observer } from "mobx-react-lite"
 import React, { useEffect } from "react"
-import { FlatList, Image, View, TouchableOpacity } from "react-native"
+import { FlatList, Image, TouchableOpacity, View } from "react-native"
 import { Header, Screen, Text, Wallpaper } from "../../components"
 import { useStores } from "../../models"
 import { color } from "../../theme"
@@ -17,11 +17,11 @@ export const DeliveryListScreen = observer(function DeliveryListScreen() {
 
   useEffect(() => {
     async function fetchData() {
-      await deliveryStore.getDeliveries()
+      if (delivery || delivery.length <= 0) {
+        await deliveryStore.getDeliveries()
+      }
     }
     fetchData()
-    console.tron.log('deliveryStore:: ', deliveryStore)
-    console.tron.log('deliveries:: ', delivery)
   }, [])
 
   return (

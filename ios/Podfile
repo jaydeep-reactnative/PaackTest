@@ -9,7 +9,7 @@ target 'PaackTest' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
-  
+
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-LocationAccuracy', :path => "#{permissions_path}/LocationAccuracy"
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
@@ -24,11 +24,18 @@ target 'PaackTest' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  use_flipper!
-  post_install do |installer|
-    flipper_post_install(installer)
+  #use_flipper!
+    post_install do |installer|
+      #flipper_post_install(installer)
+      # setting all pods deployment target to 9.0
+      installer.pods_project.targets.each do |target|
+          target.build_configurations.each do |config|
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
+          end
+        end
+    end
   end
-end
+
 
 target 'PaackTest-tvOS' do
   # Pods for PaackTest-tvOS

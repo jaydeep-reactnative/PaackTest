@@ -8,7 +8,6 @@ import { useStores } from "../../models"
 import { color } from "../../theme"
 import * as DeliveryDetails from './delivery-details-screen-style'
 
-// export const logoIgnite = require("./logo-ignite.png")
 const heart = require("./heart.png")
 
 export const DeliveryDetailsScreen = ({ route }) => {
@@ -22,6 +21,7 @@ export const DeliveryDetailsScreen = ({ route }) => {
 
   const [isDeliveryStart, setDeliveryStatus] = useState(false)
   const [currentLocation, setLocation] = useState(null)
+  const [deliveryStatus, setDeliveredStatus] = useState(item.status)
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
@@ -29,8 +29,8 @@ export const DeliveryDetailsScreen = ({ route }) => {
         statuses[PERMISSIONS.IOS.LOCATION_ALWAYS] === 'granted' || statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE] === 'granted'
           ? getCurrentPosition()
           : requestMultiple([PERMISSIONS.IOS.LOCATION_ALWAYS, PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]).then((statuses) => {
-            console.tron.log('Location always ios', statuses[PERMISSIONS.IOS.LOCATION_ALWAYS])
-            console.tron.log('Location when use ios', statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE])
+            // console.tron.log('Location always ios', statuses[PERMISSIONS.IOS.LOCATION_ALWAYS])
+            // console.tron.log('Location when use ios', statuses[PERMISSIONS.IOS.LOCATION_WHEN_IN_USE])
           })
       })
     } else {
@@ -38,19 +38,17 @@ export const DeliveryDetailsScreen = ({ route }) => {
         statuses[PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION] === 'granted' || statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION] === 'granted' || statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] === 'granted'
           ? getCurrentPosition()
           : requestMultiple([PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION, PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]).then((statuses) => {
-            console.tron.log('Location background android', statuses[PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION])
-            console.tron.log('Location coarse android', statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION])
-            console.tron.log('Location fine android', statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION])
+            // console.tron.log('Location background android', statuses[PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION])
+            // console.tron.log('Location coarse android', statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION])
+            // console.tron.log('Location fine android', statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION])
           })
       })
     }
-    console.tron.log('Item: ', item)
   }, [])
 
   const getCurrentPosition = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        console.tron.log('Position: ', position)
         setLocation(position.coords)
       },
       (error) => {
@@ -67,6 +65,24 @@ export const DeliveryDetailsScreen = ({ route }) => {
 
   const productUndelivered = async() => {
     await deliveryStore.postDelivery(item.id, "undelivered", currentLocation.latitude, currentLocation.longitude)
+  }
+
+  const renderDeliveredButton = () => {
+    return <Button
+      style={DeliveryDetails.DEMO}
+      textStyle={DeliveryDetails.DEMO_TEXT}
+      tx="deliveryDetailsScreen.delivered"
+      onPress={() => productDelivered()}
+    />
+  }
+
+  const renderUnDeliveredButton = () => {
+    return <Button
+      style={DeliveryDetails.DEMO}
+      textStyle={DeliveryDetails.DEMO_TEXT}
+      tx="deliveryDetailsScreen.undelivered"
+      onPress={() => productUndelivered()}
+    />
   }
 
   return (
@@ -97,21 +113,11 @@ export const DeliveryDetailsScreen = ({ route }) => {
           {
             isDeliveryStart &&
             <View>
-              <Button
-                style={DeliveryDetails.DEMO}
-                textStyle={DeliveryDetails.DEMO_TEXT}
-                tx="deliveryDetailsScreen.delivered"
-                onPress={() => productDelivered()}
-              />
-              <Button
-                style={DeliveryDetails.DEMO}
-                textStyle={DeliveryDetails.DEMO_TEXT}
-                tx="deliveryDetailsScreen.undelivered"
-                onPress={() => productUndelivered()}
-              />
+              {console.tron.log('DELIVERY STATUS: ', deliveryStatus)}
+              { deliveryStatus === undefined || deliveryStatus === 'undelivered' ? renderDeliveredButton() : null}
+              { deliveryStatus === undefined || deliveryStatus === 'delivered' ? renderUnDeliveredButton() : null}
             </View>
           }
-
         </View>
         <View style={DeliveryDetails.LOVE_WRAPPER}>
           <Text style={DeliveryDetails.LOVE} text="Made with" />
