@@ -5,7 +5,7 @@
  * will use once logged in.
  */
 import React from "react"
-import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native"
+import { NavigationContainer, NavigationContainerRef, DefaultTheme } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import { MainNavigator } from "./main-navigator"
 
@@ -48,7 +48,14 @@ export const RootNavigator = React.forwardRef<
   Partial<React.ComponentProps<typeof NavigationContainer>>
 >((props, ref) => {
   return (
-    <NavigationContainer {...props} ref={ref}>
+    <NavigationContainer {...props} ref={ref} theme={{
+      dark: true,
+      colors: {
+        ...DefaultTheme.colors,
+        background: '#5D2555',
+        card: '#5D2555',
+      },
+    }}>
       <RootStack />
     </NavigationContainer>
   )
