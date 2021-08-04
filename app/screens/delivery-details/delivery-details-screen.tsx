@@ -61,11 +61,11 @@ export const DeliveryDetailsScreen = observer(function DeliveryDetailsScreen({ r
   }
 
   const productDelivered = async() => {
-    await deliveryStore.postDelivery(item.id, "delivered", currentLocation.latitude, currentLocation.longitude)
+    await deliveryStore.postDelivery(item.id, "delivered", currentLocation?.latitude, currentLocation?.longitude)
   }
 
   const productUndelivered = async() => {
-    await deliveryStore.postDelivery(item.id, "undelivered", currentLocation.latitude, currentLocation.longitude)
+    await deliveryStore.postDelivery(item.id, "undelivered", currentLocation?.latitude, currentLocation?.longitude)
   }
 
   const renderDeliveredButton = () => {
