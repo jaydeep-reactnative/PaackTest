@@ -77,5 +77,5 @@ _Steps to run the project in ios and andorid_
 
 ## Extra steps for ios
 
-- You will need all the certificates to run the ios project in a real device.
+- None
  
